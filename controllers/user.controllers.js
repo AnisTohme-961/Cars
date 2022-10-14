@@ -77,17 +77,17 @@ export const deleteUser = async (req, res, next) => {
 
 export const changePassword = async (req, res, next) => {
   const { id } = req.user
-  const { oldPass, newPass } = req.body
+  const { oldPassword, newPassword } = req.body
   try {
     const user = await User.findById(id)
     if (!user) {
       return next(createError(`User not found with id ${id}`, 404))
     }
-    const isMatch = await bcrypt.compare(oldPass, user.password)
+    const isMatch = await bcrypt.compare(oldPassword, user.password)
     if (!isMatch) {
       return next(createError("Old password is incorrect", 400))
     }
-    const hashedPassword = await bcrypt.hash(newPass, 12)
+    const hashedPassword = await bcrypt.hash(newPassword, 12)
     user.password = hashedPassword
     await user.save()
     res.status(200).json({
