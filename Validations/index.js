@@ -3,9 +3,9 @@ import signup from "./signup.validator.js"
 import login from "./login.validator.js"
 
 const Validators = {
-    user
+    user,
     login,
     signup
 }
 
-export const Validators
+export default Validators
