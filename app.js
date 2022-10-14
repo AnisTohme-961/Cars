@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import dbConnection from "./config/mongoconnect.js"
+import ErrorHandler from "./Middleware/ErrorHandler.js"
 
 dotenv.config()
 
@@ -10,6 +11,7 @@ const app = express()
 
 app.use(express.json())
 
+
 app.get("/", (req, res, next) => {
   res.status(200).json({
     message: "This is the Car Management System API",
@@ -17,6 +19,9 @@ app.get("/", (req, res, next) => {
     repository: "https://github.com/AnisTohme-961/Cars.git",
   })
 })
+
+app.use("/auth", authRoutes)
+app.use(ErrorHandler)
 
 app.listen(PORT, async () => {
   await dbConnection()
