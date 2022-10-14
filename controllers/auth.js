@@ -13,7 +13,7 @@ let transporter = nodemailer.createTransport({
 })
 
 export const signUp = async (req, res, next) => {
-  const { firstName, lastName, email, password } = req.body
+  const { firstName, lastName, email, password, role } = req.body
   const hashPassword = await bcrypt.hash(password, 12)
   try {
     const user = new User({
@@ -21,6 +21,7 @@ export const signUp = async (req, res, next) => {
       lastName: lastName,
       email: email,
       password: hashPassword,
+      role: role
     })
     const result = await user.save()
     res.status(201).json({
