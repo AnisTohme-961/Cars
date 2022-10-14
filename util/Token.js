@@ -12,3 +12,5 @@ export const generateToken = (user) => {
 
   return { accessToken, refreshToken }
 }
+
+export default generateToken
