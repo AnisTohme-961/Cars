@@ -1,5 +1,5 @@
 import express from "express"
-import { login, signUp } from "../controllers/auth"
+import { login, signUp } from "../controllers/auth.js"
 
 const router = express.Router()
 
@@ -14,3 +14,5 @@ router.post("/signup", signUp)
 // @access  Private
 
 router.post("/login", login)
+
+export default router
