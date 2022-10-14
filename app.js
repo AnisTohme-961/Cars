@@ -2,6 +2,7 @@ import express from "express"
 import dotenv from "dotenv"
 import dbConnection from "./config/mongoconnect.js"
 import ErrorHandler from "./Middleware/ErrorHandler.js"
+import authRoutes from "./routes/auth.routes.js"
 
 dotenv.config()
 
