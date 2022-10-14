@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import dbConnection from "./config/mongoconnect.js"
 import ErrorHandler from "./Middleware/ErrorHandler.js"
 import authRoutes from "./routes/auth.routes.js"
+import userRoutes from "./routes/user.routes.js"
 
 dotenv.config()
 
@@ -22,6 +23,7 @@ app.get("/", (req, res, next) => {
 })
 
 app.use("/auth", authRoutes)
+app.use("/users", userRoutes)
 app.use(ErrorHandler)
 
 app.listen(PORT, async () => {
