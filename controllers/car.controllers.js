@@ -26,6 +26,31 @@ export const getCars = async (req, res, next) => {
   }
 }
 
+export const getCarsWithCoordinates = async (req, res, next) => {
+  try {
+    const carsCoordinates = await Car.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
+          },
+          distanceField: "dist.calculated",
+          maxDistance: 100000,
+          spherical: true,
+        },
+      },
+    ])
+    res.status(200).json({
+      success: true,
+      message: "Cars with their respective coordinates",
+      cars: carsCoordinates,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const getCarById = async (req, res, next) => {
   try {
     const carId = req.params.carId
@@ -148,6 +173,31 @@ export const createCar = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Car created successfully",
+      car: car,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateCar = async (req, res, next) => {
+  const carId = req.params.carId
+  const { id } = req.user
+  const { carName, tags } = req.body
+  try {
+    const car = await Car.findById(carId)
+    if (!car) {
+      return next(createError(`Car not found with id ${carId}`, 404))
+    }
+    if (car.owner.toString() !== id) {
+      return next(createError("User not authorized", 403))
+    }
+    car.carName = carName
+    car.tags = tags
+    await car.save()
+    res.status(200).json({
+      success: true,
+      message: "Car updated successfully",
       car: car,
     })
   } catch (error) {
