@@ -21,7 +21,7 @@ export const signUp = async (req, res, next) => {
       lastName: lastName,
       email: email,
       password: hashPassword,
-      role: role
+      role: role,
     })
     const result = await user.save()
     res.status(201).json({
@@ -46,11 +46,11 @@ export const signUp = async (req, res, next) => {
 export const login = async (req, res, next) => {
   const { email, password } = req.body
   try {
-    const user = User.findOne({ email: email })
+    const user = await User.findOne({ email: email })
     if (!user) {
       return next(createError("User not found", 404))
     }
-    const isEqual = await bcrypt.compareSync(password, user.password)
+    const isEqual = bcrypt.compareSync(password, user.password)
     if (!isEqual) {
       return next(createError("Invalid password", 401))
     }
@@ -59,9 +59,10 @@ export const login = async (req, res, next) => {
     const { _id } = user
     await User.findOneAndUpdate({ _id }, { token: refreshToken }) // refresh token added to db
     const { token, ...userData } = user._doc // _doc removes refresh token from data
+    userData.accessToken = accessToken // access token is added to user data
     res.status(200).json({
       success: true,
-      message: `${user.firstName} + ${user.lastName} logged in successfully.`,
+      message: `${user.firstName} ${user.lastName} logged in successfully.`,
       user: userData,
     })
   } catch (error) {
