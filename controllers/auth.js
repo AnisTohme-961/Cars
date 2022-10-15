@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer"
 import bcrypt from "bcrypt"
-import User from "../model/user.js"
+import User from "../models/user.js"
 import createError from "../util/Error.js"
 import generateToken from "../util/Token.js"
 
