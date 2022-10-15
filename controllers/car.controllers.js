@@ -70,7 +70,7 @@ export const getCarById = async (req, res, next) => {
             carImage: "$carImage",
             owner: "$owner",
             tags: "$tags",
-            location: "$location",
+            geometry: "$geometry",
           },
         },
       },
