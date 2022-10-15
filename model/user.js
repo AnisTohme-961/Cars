@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { Schema } from "mongoose"
 
 const userSchema = mongoose.Schema(
   {
@@ -28,6 +28,12 @@ const userSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    cars: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Car",
+      },
+    ],
   },
   { timestamps: true }
 )
