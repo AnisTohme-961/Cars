@@ -1,5 +1,16 @@
 import mongoose, { Schema } from "mongoose"
 
+const geoSchema = mongoose.Schema({
+  type: {
+    type: String,
+    default: "Point",
+  },
+  coordinates: {
+    type: [Number],
+    index: "2dsphere",
+  },
+})
+
 const carSchema = mongoose.Schema(
   {
     carName: {
@@ -24,18 +35,11 @@ const carSchema = mongoose.Schema(
       type: [String],
       lowercase: true,
       required: false,
-      default: null
+      default: null,
     },
-    location: {
-      type: {
-        type: String,
-      },
-      coordinates: [],
-    },
+    geometry: geoSchema,
   },
   { timestamps: true }
 )
-
-carSchema.index({ "location" : "2dsphere" })
 
 export default mongoose.model("Car", carSchema)
