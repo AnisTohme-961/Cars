@@ -123,7 +123,7 @@ export const getCarsWithTags = async (req, res, next) => {
       },
       {
         $project: {
-          title: 1,
+          carName: 1,
           tags: 1,
           numberofTags: {
             $cond: {
