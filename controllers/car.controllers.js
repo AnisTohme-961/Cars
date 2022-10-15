@@ -79,9 +79,51 @@ export const getCarById = async (req, res, next) => {
   }
 }
 
+export const getCarsWithTags = async (req, res, next) => {
+  try {
+    const { carId } = req.params
+    const car = Car.findById(carId)
+    const carwithTags = await Car.aggregate([
+      {
+        $match: { _id: mongoose.Types.ObjectId(carId) },
+      },
+      {
+        $unwind: { path: "$tags", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $group: {
+          _id: "$carName",
+          tags: { $push: "$tags" },
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          tags: 1,
+          numberofTags: {
+            $cond: {
+              if: { $isArray: "$tags" },
+              then: { $size: "$tags" },
+              else: "Not Applicable",
+            },
+          },
+        },
+      },
+    ])
+    res.status(200).json({
+      success: true,
+      message: "Car with the appropriate tags:",
+      car: carwithTags[0],
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const createCar = async (req, res, next) => {
   const { id } = req.user
   const { carName, owner, categoryId, tags, location } = req.body
+  const { carImage } = req.file.path
 
   try {
     const existingCar = await Car.findOne({ carName })
