@@ -1,4 +1,4 @@
-import User from "../model/user.js"
+import User from "../models/user.js"
 import bcrypt from "bcrypt"
 import createError from "../util/Error.js"
 
