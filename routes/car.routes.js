@@ -3,8 +3,10 @@ import multer from "multer"
 import Car from "../models/car.js"
 import {
   createCar,
+  deleteCar,
   getCarById,
   getCars,
+  updateCar,
 } from "../controllers/car.controllers.js"
 import { verifyLogin } from "../Middleware/Verification.js"
 import Validator from "../Middleware/Validator.js"
@@ -52,5 +54,17 @@ router.get("/:carId", verifyLogin, getCarById)
 // @access  Private
 
 router.post("/", upload.single("carImage"), createCar)
+
+// @route   PUT /car
+// @desc    Update car
+// @access  Private
+
+router.put("/:carId", verifyLogin, Validator("car"), updateCar)
+
+// @route   DELETE /car
+// @desc  - Delete car
+// @access  Private
+
+router.delete("/:carId", verifyLogin, deleteCar)
 
 export default router
