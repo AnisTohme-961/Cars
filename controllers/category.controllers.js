@@ -43,8 +43,7 @@ export const getCategoryById = async (req, res, next) => {
       },
       {
         $project: {
-          title: 1,
-          description: 1,
+          name: 1,
           owner: "$user._id",
           fullname: {
             $concat: ["$user.firstName", " ", "$user.lastName"],
