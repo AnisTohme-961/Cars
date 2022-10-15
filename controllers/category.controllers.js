@@ -45,7 +45,7 @@ export const getCategoryById = async (req, res, next) => {
         $project: {
           title: 1,
           description: 1,
-          writtenBy: "$user._id",
+          owner: "$user._id",
           fullname: {
             $concat: ["$user.firstName", " ", "$user.lastName"],
           },
