@@ -23,6 +23,8 @@ const carSchema = mongoose.Schema(
     tags: {
       type: [String],
       lowercase: true,
+      required: false,
+      default: null
     },
     location: {
       type: {
@@ -34,6 +36,6 @@ const carSchema = mongoose.Schema(
   { timestamps: true }
 )
 
-carSchema.index({ location: "2dsphere" })
+carSchema.index({ "location" : "2dsphere" })
 
 export default mongoose.model("Car", carSchema)
