@@ -9,3 +9,5 @@ const carSchema = Joi.object({
   categoryId: myJoiObjectId("Category"),
   tags: Joi.array().items(Joi.string()),
 })
+
+export default carSchema
