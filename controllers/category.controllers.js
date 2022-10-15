@@ -89,6 +89,30 @@ export const createCategory = async (req, res, next) => {
   }
 }
 
+export const updateCategory = async (req, res, next) => {
+  const categoryId = req.params.categoryId
+  const { id } = req.user
+  const { categoryName } = req.body
+  try {
+    const category = await Category.findById(categoryId)
+    if (!category) {
+      return next(createError(`Category not found with id ${categoryId}`, 404))
+    }
+    if (category.owner.toString() !== id) {
+      return next(createError("User not authorized", 403))
+    }
+    category.categoryName = categoryName
+    await category.save()
+    res.status(200).json({
+      success: true,
+      message: "Category updated successfully",
+      category: category,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const deleteCategory = async (req, res, next) => {
   const categoryId = req.params.categoryId
   const { id } = req.user
