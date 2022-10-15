@@ -4,7 +4,7 @@ import createError from "../util/Error.js"
 
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find()
+    const users = await User.find().select("-password -token")
     if (users.length <= 0) {
       return next(createError("Users not found", 404))
     }
