@@ -147,7 +147,7 @@ export const getCarsWithTags = async (req, res, next) => {
 
 export const createCar = async (req, res, next) => {
   const { id } = req.user
-  const { carName, owner, categoryId, tags, location } = req.body
+  const { carName, owner, categoryId, tags, geometry } = req.body
   const { carImage } = req.file.path
 
   try {
@@ -161,10 +161,7 @@ export const createCar = async (req, res, next) => {
       owner: id,
       categoryId: categoryId,
       tags: tags,
-      location: {
-        type: "Point",
-        coordinates: [longitude, latitude],
-      },
+      geometry: geometry
     })
     await car.save()
     const user = await User.findById(id)
