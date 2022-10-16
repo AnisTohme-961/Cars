@@ -138,7 +138,7 @@ export const getCarById = async (req, res, next) => {
   }
 }
 
-export const getCarsWithTags = async (req, res, next) => {
+export const getCarWithTags = async (req, res, next) => {
   try {
     const { carId } = req.params
     const car = await Car.findById(carId)
