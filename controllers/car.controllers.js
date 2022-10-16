@@ -105,10 +105,6 @@ export const getCarById = async (req, res, next) => {
           _id: {
             id: "$_id",
             carName: "$carName",
-            carImage: "$carImage",
-            owner: "$owner",
-            tags: "$tags",
-            geometry: "$geometry",
           },
         },
       },
@@ -185,7 +181,7 @@ export const getCarsWithTags = async (req, res, next) => {
 
 export const createCar = async (req, res, next) => {
   const { carName, carImage, owner, categoryId, tags, geometry } = req.body
-  const { id }  = req.user
+  const { id } = req.user
   try {
     const existingCar = await Car.findOne({ carName })
     if (existingCar) {
