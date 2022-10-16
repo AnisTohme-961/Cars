@@ -8,6 +8,7 @@ const carSchema = Joi.object({
   carImage: Joi.string().required(),
   categoryId: myJoiObjectId("Category"),
   tags: Joi.array().items(Joi.string()),
+  geometry: Joi.object()
 })
 
 export default carSchema
