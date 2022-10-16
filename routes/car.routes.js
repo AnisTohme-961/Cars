@@ -6,6 +6,7 @@ import {
   deleteCar,
   getCarById,
   getCars,
+  getCarsByCoordinates,
   searchCars,
   searchCarsByTags,
   updateCar,
@@ -62,6 +63,12 @@ router.get("/?key=value", verifyLogin, searchCars)
 // @access  Private
 
 router.get("/?tags", verifyLogin, searchCarsByTags)
+
+// @route   GET /cars/?lng=value&lat=value
+// @desc    GET Cars By Coordinates
+// @access  Private
+
+router.get("/?lng=value&lat=value", verifyLogin, getCarsByCoordinates)
 
 // @route   POST /car
 // @desc    Add car
