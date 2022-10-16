@@ -55,7 +55,7 @@ router.get("/:carId", verifyLogin, getCarById)
 // @desc    Search Cars By Key and Value
 // @access  Private
 
-router.get("/?key:value", verifyLogin, searchCars)
+router.get("/?key=value", verifyLogin, searchCars)
 
 // @route   Get /cars/?tags
 // @desc    Search Cars By Tags
