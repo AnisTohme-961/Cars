@@ -7,7 +7,7 @@ import user from "../models/user.js"
 
 export const getCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find({}).sort({ createdAt: -1 })
+    const categories = await Category.find({}).select("-updatedAt").sort({ createdAt: -1 })
     res.status(200).json({
       success: true,
       message: "These are all the categories displayed.",
