@@ -28,7 +28,7 @@ app.use("/users", userRoutes)
 app.use("/cars", carRoutes)
 app.use("/categories", categoryRoutes)
 
-app.use('/uploads', express.static('uploads'))
+//app.use('/uploads', express.static('uploads'))
 
 app.use(ErrorHandler)
 
