@@ -64,7 +64,7 @@ export const searchCarsByTags = async (req, res, next) => {
   }
 }
 
-export const getCarsWithCoordinates = async (req, res, next) => {
+export const getCarsByCoordinates = async (req, res, next) => {
   try {
     const carsCoordinates = await Car.aggregate([
       {
@@ -184,9 +184,8 @@ export const getCarsWithTags = async (req, res, next) => {
 }
 
 export const createCar = async (req, res, next) => {
-  const { id } = req.user
-  const { carName, owner, categoryId, tags, geometry } = req.body
-  const { carImage } = req.file.path
+  const { carName, carImage, owner, categoryId, tags, geometry } = req.body
+  const { id }  = req.user
   try {
     const existingCar = await Car.findOne({ carName })
     if (existingCar) {
