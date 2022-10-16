@@ -7,6 +7,7 @@ import {
   getCarById,
   getCars,
   getCarsByCoordinates,
+  getCarWithTags,
   searchCars,
   searchCarsByTags,
   updateCar,
@@ -46,7 +47,7 @@ const upload = multer({
 // @access  Private
 router.get("/", verifyLogin, getCars)
 
-// @route   GET /car/id
+// @route   GET /car/:carId
 // @desc    Get car by id
 // @access  Private
 
@@ -69,6 +70,12 @@ router.get("/?tags", verifyLogin, searchCarsByTags)
 // @access  Private
 
 router.get("/?lng=value&lat=value", verifyLogin, getCarsByCoordinates)
+
+// @route   GET/cars/:carId/tags
+// @desc    GET Car with or without tag
+// @access  Private
+
+router.get("/:carId/tags", verifyLogin, getCarWithTags)
 
 // @route   POST /car
 // @desc    Add car
