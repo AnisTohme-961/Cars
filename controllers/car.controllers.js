@@ -26,6 +26,44 @@ export const getCars = async (req, res, next) => {
   }
 }
 
+export const searchCars = async (req, res, next) => {
+  const { key, value } = req.query
+  if (!key || key == "id") {
+    key == "_id"
+  }
+  try {
+    const cars = await Car.find({ [key]: value })
+    if (!cars) {
+      return next(createError("Cars not found", 404))
+    }
+    res.status(200).json({
+      success: true,
+      message: "Cars fetched successfully",
+      data: cars,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const searchCarsByTags = async (req, res, next) => {
+  const { tags } = req.query
+  const tagsArray = tags.split(",")
+  try {
+    const cars = await Car.find({ tags: { $in: tagsArray } })
+    if (!cars) {
+      return next(createError("Cars not found", 404))
+    }
+    res.status(200).json({
+      success: true,
+      message: "Cars searched by tags fetched successfully",
+      data: cars,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const getCarsWithCoordinates = async (req, res, next) => {
   try {
     const carsCoordinates = await Car.aggregate([
@@ -89,7 +127,7 @@ export const getCarById = async (req, res, next) => {
         $project: {
           category: {
             id: "$category._id",
-            category: "$category.categoryName",
+            name: "$category.categoryName",
           },
         },
       },
@@ -107,7 +145,7 @@ export const getCarById = async (req, res, next) => {
 export const getCarsWithTags = async (req, res, next) => {
   try {
     const { carId } = req.params
-    const car = Car.findById(carId)
+    const car = await Car.findById(carId)
     const carwithTags = await Car.aggregate([
       {
         $match: { _id: mongoose.Types.ObjectId(carId) },
@@ -149,7 +187,6 @@ export const createCar = async (req, res, next) => {
   const { id } = req.user
   const { carName, owner, categoryId, tags, geometry } = req.body
   const { carImage } = req.file.path
-
   try {
     const existingCar = await Car.findOne({ carName })
     if (existingCar) {
@@ -161,7 +198,7 @@ export const createCar = async (req, res, next) => {
       owner: id,
       categoryId: categoryId,
       tags: tags,
-      geometry: geometry
+      geometry: geometry,
     })
     await car.save()
     const user = await User.findById(id)
