@@ -5,6 +5,7 @@ import {
   deleteCategory,
   getCategories,
   getCategoryById,
+  updateCategory,
 } from "../controllers/category.controllers.js"
 import Validator from "../Middleware/Validator.js"
 
@@ -28,7 +29,13 @@ router.get("/:categoryId", verifyLogin, getCategoryById)
 
 router.post("/", verifyLogin, Validator("category"), createCategory)
 
-// @route   DELETE /category/:categoryId
+// @route   PUT  /categories/:categoryId
+// @desc    UPDATE category
+// @access  Private
+
+router.put("/:categoryId", verifyLogin, Validator("category"), updateCategory)
+
+// @route   DELETE /categories/:categoryId
 // @desc    Delete category
 // @access  Private
 
