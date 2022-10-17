@@ -3,6 +3,7 @@ import Car from "../models/car.js"
 import User from "../models/user.js"
 import createError from "../util/Error.js"
 import car from "../models/car.js"
+import category from "../models/category.js"
 
 export const getCars = async (req, res, next) => {
   const currentCarPage = req.query.page || 1
@@ -179,7 +180,7 @@ export const getCarWithTags = async (req, res, next) => {
   }
 }
 
-export const createCar = async (req, res, next) => {
+export const addCar = async (req, res, next) => {
   const { carName, carImage, owner, categoryId, tags, geometry } = req.body
   const { id } = req.user
   try {
