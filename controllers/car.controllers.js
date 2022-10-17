@@ -7,12 +7,12 @@ import category from "../models/category.js"
 
 export const getCars = async (req, res, next) => {
   const currentCarPage = req.query.page || 1
-  const carperPage = 2
+  const carPerPage = 2
   try {
     const cars = await Car.find({})
       .sort({ createdAt: -1 })
-      .skip((currentCarPage - 1) * carperPage)
-      .limit(carperPage)
+      .skip((currentCarPage - 1) * carPerPage)
+      .limit(carPerPage)
     if (!cars) {
       return next(createError("Cars not Found", 404))
     }
