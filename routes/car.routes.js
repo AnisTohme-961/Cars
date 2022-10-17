@@ -65,19 +65,19 @@ router.get("/:carId", verifyLogin, getCarById)
 // @desc    Search Cars By Key and Value
 // @access  Private
 
-router.get("/?key=value", verifyLogin, searchCars)
+router.get("/search", verifyLogin, searchCars)
 
 // @route   Get /cars/?tags
 // @desc    Search Cars By Tags
 // @access  Private
 
-router.get("/?tags", verifyLogin, searchCarsByTags)
+router.get("/tags", verifyLogin, searchCarsByTags)
 
 // @route   GET /cars/?lng=value&lat=value
 // @desc    GET Cars By Coordinates
 // @access  Private
 
-router.get("/?lng=value&lat=value", verifyLogin, getCarsByCoordinates)
+router.get("/coordinates", verifyLogin, getCarsByCoordinates)
 
 // @route   GET/cars/:carId/tags
 // @desc    GET Car with or without tag
