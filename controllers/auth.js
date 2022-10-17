@@ -14,8 +14,8 @@ let transporter = nodemailer.createTransport({
 
 export const signUp = async (req, res, next) => {
   const { firstName, lastName, email, password, role } = req.body
-  const hashPassword = await bcrypt.hash(password, 12)
   try {
+    const hashPassword = await bcrypt.hash(password, 12)
     const user = new User({
       firstName: firstName,
       lastName: lastName,
