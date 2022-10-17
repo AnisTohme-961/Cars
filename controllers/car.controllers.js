@@ -3,7 +3,6 @@ import Car from "../models/car.js"
 import User from "../models/user.js"
 import createError from "../util/Error.js"
 import car from "../models/car.js"
-import category from "../models/category.js"
 
 export const getCars = async (req, res, next) => {
   const currentCarPage = req.query.page || 1
@@ -75,7 +74,7 @@ export const getCarsByCoordinates = async (req, res, next) => {
             coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
           },
           distanceField: "dist.calculated",
-          maxDistance: 100000,
+          maxDistance: 10000,
           spherical: true,
         },
       },
