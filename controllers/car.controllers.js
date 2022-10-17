@@ -94,18 +94,10 @@ export const groupCarsByCategories = async (req, res, next) => {
   try {
     const cars = await Car.aggregate([
       {
-        $group: {
-          _id: {
-            id: "$_id",
-            carName: "$carName",
-          },
-        },
-      },
-      {
         $lookup: {
           from: "categories",
           localField: "categoryId",
-          foreignField: "id",
+          foreignField: "_id",
           as: "category",
         },
       },
@@ -114,6 +106,7 @@ export const groupCarsByCategories = async (req, res, next) => {
       },
       {
         $project: {
+          carName: 1,
           category: {
             id: "$category._id",
             name: "$category.categoryName",
@@ -123,7 +116,7 @@ export const groupCarsByCategories = async (req, res, next) => {
     ])
     res.status(200).json({
       success: true,
-      message: "Cars fetched successfully by categories",
+      message: "Cars fetched successfully grouped by categories",
       cars: cars,
     })
   } catch (error) {
@@ -138,24 +131,15 @@ export const getCarById = async (req, res, next) => {
     if (!car) {
       return next(createError("Car not found", 404))
     }
-    const carAggregate = await Car.aggregate([
+    const result = await Car.aggregate([
       {
         $match: { _id: mongoose.Types.ObjectId(carId) },
-      },
-      {
-        $group: {
-          _id: {
-            id: "$_id",
-            carName: "$carName",
-            categoryId: "$categoryId",
-          },
-        },
       },
       {
         $lookup: {
           from: "categories",
           localField: "categoryId",
-          foreignField: "id",
+          foreignField: "_id",
           as: "category",
         },
       },
@@ -164,6 +148,7 @@ export const getCarById = async (req, res, next) => {
       },
       {
         $project: {
+          carName: 1,
           category: {
             id: "$category._id",
             name: "$category.categoryName",
@@ -173,8 +158,8 @@ export const getCarById = async (req, res, next) => {
     ])
     res.status(200).json({
       success: true,
-      message: "Car found successfully",
-      car: carAggregate[0],
+      message: "Car fetched successfully",
+      car: result[0],
     })
   } catch (error) {
     next(error)
