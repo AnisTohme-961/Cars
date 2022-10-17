@@ -2,7 +2,7 @@ import express from "express"
 //import multer from "multer"
 import Car from "../models/car.js"
 import {
-  createCar,
+  addCar,
   deleteCar,
   getCarById,
   getCars,
@@ -81,7 +81,7 @@ router.get("/:carId/tags", verifyLogin, getCarWithTags)
 // @desc    Add car
 // @access  Private
 
-router.post("/", Validator("car"), createCar)
+router.post("/", verifyLogin, Validator("car"), addCar)
 
 // @route   PUT /car
 // @desc    Update car
