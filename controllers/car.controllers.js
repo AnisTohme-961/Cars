@@ -3,6 +3,7 @@ import Car from "../models/car.js"
 import User from "../models/user.js"
 import createError from "../util/Error.js"
 import car from "../models/car.js"
+import category from "../models/category.js"
 
 export const getCars = async (req, res, next) => {
   const currentCarPage = req.query.page || 1
@@ -89,6 +90,47 @@ export const getCarsByCoordinates = async (req, res, next) => {
   }
 }
 
+export const groupCarsByCategories = async (req, res, next) => {
+  try {
+    const cars = await Car.aggregate([
+      {
+        $group: {
+          _id: {
+            id: "$_id",
+            carName: "$carName",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "categoryId",
+          foreignField: "id",
+          as: "category",
+        },
+      },
+      {
+        $unwind: "$category",
+      },
+      {
+        $project: {
+          category: {
+            id: "$category._id",
+            name: "$category.categoryName",
+          },
+        },
+      },
+    ])
+    res.status(200).json({
+      success: true,
+      message: "Cars fetched successfully by categories",
+      cars: cars,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const getCarById = async (req, res, next) => {
   try {
     const carId = req.params.carId
@@ -105,6 +147,7 @@ export const getCarById = async (req, res, next) => {
           _id: {
             id: "$_id",
             carName: "$carName",
+            categoryId: "$categoryId",
           },
         },
       },
