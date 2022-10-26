@@ -105,11 +105,37 @@ export const groupCarsByCategories = async (req, res, next) => {
         $unwind: "$category",
       },
       {
+        $lookup: {
+          from: "users",
+          localField: "category.owner",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $group: {
+          _id: {
+            _id: "$_id",
+            carName: "$carName",
+            owner: {
+              id: "$user._id",
+              fullname: { $concat: ["$user.firstName", " ", "$user.lastName"] },
+            },
+          },
+          categories: {
+            $push: "$category",
+          },
+        },
+      },
+      {
         $project: {
           carName: 1,
           category: {
-            id: "$category._id",
-            name: "$category.categoryName",
+            id: { $arrayElemAt: ["$categories._id", 0] },
+            name: { $arrayElemAt: ["$categories.categoryName", 0] },
           },
         },
       },
