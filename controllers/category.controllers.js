@@ -64,6 +64,55 @@ export const getCategoryById = async (req, res, next) => {
   }
 }
 
+export const groupCarByCategory = async (req, res, next) => {
+  try {
+    const categories = await Category.aggregate([
+      {
+        $lookup: {
+          from: "cars",
+          let: {
+            carId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$$carId", "$categoryId"],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "category.owner",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $project: {
+                carImage: 0,
+                owner: 0,
+                geometry: 0,
+                tags: 0,
+                user: 0,
+              },
+            },
+          ],
+          as: "cars",
+        },
+      },
+    ])
+    res.status(200).json({
+      success: true,
+      message: "Cars grouped by categories",
+      data: categories,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const createCategory = async (req, res, next) => {
   const { categoryName } = req.body
   const { id } = req.user
