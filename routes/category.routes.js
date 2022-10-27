@@ -5,6 +5,7 @@ import {
   deleteCategory,
   getCategories,
   getCategoryById,
+  groupCarByCategory,
   updateCategory,
 } from "../controllers/category.controllers.js"
 import Validator from "../Middleware/Validator.js"
@@ -16,6 +17,12 @@ const router = express.Router()
 // @access  Private
 
 router.get("/", verifyLogin, getCategories)
+
+// @route   GET /categories/cars
+// @desc    Group Cars By Category
+// @access  Private
+
+router.get("/cars", verifyLogin, groupCarByCategory)
 
 // @route   GET /categories/:categoryId
 // @desc    Get category
