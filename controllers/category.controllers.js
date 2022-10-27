@@ -105,7 +105,7 @@ export const groupCarByCategory = async (req, res, next) => {
     ])
     res.status(200).json({
       success: true,
-      message: "Cars grouped by categories",
+      message: "Cars grouped by their own category:",
       data: categories,
     })
   } catch (error) {
