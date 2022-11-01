@@ -90,6 +90,14 @@ export const groupCarByCategory = async (req, res, next) => {
               },
             },
             {
+              $group: {
+                _id: {
+                  _id: "$_id",
+                  carName: "$carName",
+                },
+              },
+            },
+            {
               $project: {
                 carImage: 0,
                 owner: 0,
