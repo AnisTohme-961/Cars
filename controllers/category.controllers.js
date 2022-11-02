@@ -94,6 +94,12 @@ export const groupCarByCategory = async (req, res, next) => {
                 _id: {
                   _id: "$_id",
                   carName: "$carName",
+                  createdAt: {
+                    $dateToString: {
+                      format: "%d-%m-%Y time:%H:%M:%S",
+                      date: "$createdAt",
+                    },
+                  },
                 },
               },
             },
