@@ -84,7 +84,7 @@ export const groupCarByCategory = async (req, res, next) => {
             {
               $lookup: {
                 from: "users",
-                localField: "category.owner",
+                localField: "owner",
                 foreignField: "_id",
                 as: "user",
               },
