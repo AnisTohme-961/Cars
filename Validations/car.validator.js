@@ -8,7 +8,10 @@ const carSchema = Joi.object({
   carImage: Joi.string().required(),
   categoryId: myJoiObjectId("Category"),
   tags: Joi.array().items(Joi.string()),
-  geometry: Joi.object()
+  geometry: Joi.object({
+    type: Joi.string().default("Point"),
+    coordinates: Joi.array().items(Joi.number()).required()
+  })
 })
 
 export default carSchema

@@ -42,4 +42,12 @@ const carSchema = mongoose.Schema(
   { timestamps: true }
 )
 
+// console.log(geoSchema.index({ coordinates: '2dsphere' }, (err) => { // Checking if 2dsphere index is created or not
+//   if (err) {
+//     console.error('Error creating 2dsphere index:', err);
+//   }else {
+//     console.log('2dsphere index created')
+//   }
+// }));
+
 export default mongoose.model("Car", carSchema)

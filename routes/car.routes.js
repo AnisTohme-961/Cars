@@ -49,19 +49,7 @@ const upload = multer({
 
 router.get("/", verifyLogin, getCars)
 
-// @route   GET /cars/categories
-// @desc    GET Cars and Group Them By Categories
-// @access  Private
-
-router.get("/categories", verifyLogin, groupCarsByCategories)
-
-// @route   GET /car/:carId
-// @desc    Get car by id
-// @access  Private
-
-router.get("/:carId", verifyLogin, getCarById)
-
-// @route   Get /cars/?key:value
+// @route   Get /cars/?key:value  
 // @desc    Search Cars By Key and Value
 // @access  Private
 
@@ -78,6 +66,19 @@ router.get("/tags", verifyLogin, searchCarsByTags)
 // @access  Private
 
 router.get("/coordinates", verifyLogin, getCarsByCoordinates)
+
+// @route   GET /cars/categories
+// @desc    GET Cars and Group Them By Categories
+// @access  Private
+
+router.get("/categories", verifyLogin, groupCarsByCategories)
+
+// @route   GET /cars/:carId
+// @desc    Get car by id
+// @access  Private
+
+
+router.get("/:carId", verifyLogin, getCarById)
 
 // @route   GET/cars/:carId/tags
 // @desc    GET Car with or without tag

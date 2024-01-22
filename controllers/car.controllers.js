@@ -29,17 +29,18 @@ export const getCars = async (req, res, next) => {
 
 export const searchCars = async (req, res, next) => {
   const { key, value } = req.query
-  if (!key || key == "id") {
-    key == "_id"
+  if (!key || key === "id") {
+    key = "_id"
   }
+
   try {
     const cars = await Car.find({ [key]: value })
-    if (!cars) {
+    if (!cars || cars.length === 0) {
       return next(createError("Cars not found", 404))
     }
     res.status(200).json({
       success: true,
-      message: "Cars fetched successfully",
+      message: "Car by search fetched successfully",
       data: cars,
     })
   } catch (error) {
@@ -74,15 +75,53 @@ export const getCarsByCoordinates = async (req, res, next) => {
             type: "Point",
             coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
           },
+          $minDistance: 10000,
           distanceField: "dist.calculated",
-          maxDistance: 10000,
           spherical: true,
+          key: "geometry.coordinates",
+          distanceMultiplier: 0.001,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $addFields: {
+          tempDoc: {
+            carDetails: {
+              carName: "$carName",
+              owner: {
+                $concat: ["$user.firstName", " ", "$user.lastName"]
+              }
+            },
+            geometry: {
+              type: "$geometry.type",
+              coordinates: "$geometry.coordinates",
+            },
+            dist: "$dist",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          carDetails: "$tempDoc.carDetails",
+          geometry: "$tempDoc.geometry",
+          dist: "$tempDoc.dist",
         },
       },
     ])
     res.status(200).json({
       success: true,
-      message: "Cars with their respective coordinates",
+      message: "Distances calculated for cars",
       cars: carsCoordinates,
     })
   } catch (error) {
@@ -90,6 +129,65 @@ export const getCarsByCoordinates = async (req, res, next) => {
   }
 }
 
+// export const groupCarsByCategories = async (req, res, next) => {
+//   try {
+//     const cars = await Car.aggregate([
+//       {
+//         $lookup: {
+//           from: "categories",
+//           localField: "categoryId",
+//           foreignField: "_id",
+//           as: "category",
+//         },
+//       },
+//       {
+//         $unwind: "$category",
+//       },
+//       {
+//         $lookup: {
+//           from: "users",
+//           localField: "category.owner",
+//           foreignField: "_id",
+//           as: "user",
+//         },
+//       },
+//       {
+//         $unwind: "$user",
+//       },
+//       {
+//         $group: {
+//           _id: {
+//             _id: "$_id",
+//             carName: "$carName",
+//             owner: {
+//               id: "$user._id",
+//               fullname: { $concat: ["$user.firstName", " ", "$user.lastName"] },
+//             },
+//           },
+//           categories: {
+//             $push: "$category",
+//           },
+//         },
+//       },
+//       {
+//         $project: {
+//           carName: 1,
+//           category: {
+//             id: { $arrayElemAt: ["$categories._id", 0] },
+//             name: { $arrayElemAt: ["$categories.categoryName", 0] },
+//           },
+//         },
+//       },
+//     ])
+//     res.status(200).json({
+//       success: true,
+//       message: "Cars fetched successfully grouped by categories",
+//       cars: cars,
+//     })
+//   } catch (error) {
+//     next(error)
+//   }
+// }
 export const groupCarsByCategories = async (req, res, next) => {
   try {
     const cars = await Car.aggregate([
@@ -118,28 +216,30 @@ export const groupCarsByCategories = async (req, res, next) => {
       {
         $group: {
           _id: {
-            _id: "$_id",
-            carName: "$carName",
-            owner: {
-              id: "$user._id",
-              fullname: { $concat: ["$user.firstName", " ", "$user.lastName"] },
-            },
+            category: "$category.categoryName",
           },
-          categories: {
-            $push: "$category",
+          cars: {
+            $push: {
+              carName: "$carName",
+              owner: {
+                id: "$user._id",
+                fullname: {
+                  $concat: ["$user.firstName", " ", "$user.lastName"],
+                },
+              },
+            },
           },
         },
       },
       {
         $project: {
-          carName: 1,
-          category: {
-            id: { $arrayElemAt: ["$categories._id", 0] },
-            name: { $arrayElemAt: ["$categories.categoryName", 0] },
-          },
+          _id: 0,
+          category: "$_id.category",
+          cars: 1,
         },
       },
     ])
+
     res.status(200).json({
       success: true,
       message: "Cars fetched successfully grouped by categories",
@@ -206,12 +306,14 @@ export const getCarWithTags = async (req, res, next) => {
       {
         $group: {
           _id: "$carName",
+          carId: { $first: "$_id" },
           tags: { $push: "$tags" },
         },
       },
       {
         $project: {
-          carName: 1,
+          _id: "$carId",
+          carName: "$_id",
           tags: 1,
           numberofTags: {
             $cond: {
