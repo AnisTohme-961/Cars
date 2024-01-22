@@ -83,6 +83,11 @@ export const getCarsByCoordinates = async (req, res, next) => {
         },
       },
       {
+        $match: { // case where if we want to obtain the distance greater than zero. (Not the same car coordinates when passed to url)
+          "dist.calculated": {$gt: 0}
+        }
+      },
+      {
         $lookup: {
           from: "users",
           localField: "owner",
